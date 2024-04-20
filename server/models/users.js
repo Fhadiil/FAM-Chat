@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
     isAdmin: {
         type: Boolean
     }
-});
+}, { timestamps: true });
 
 mongoose.plugin(passportLocalMongoose);
 

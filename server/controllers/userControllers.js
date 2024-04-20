@@ -1,5 +1,4 @@
-const mongoose = require('mongoose'),
-    passport = require('passport'),
+passport = require('passport'),
     jwt = require('jsonwebtoken');
 const users = require('../models/users');
 
@@ -22,7 +21,7 @@ function createAccount(req, res, next) {
     const password = req.body.password || req.query.password
     users.register(newUser, password, (error, user) => {
         if (error || !user) {
-            res.locals.error = {
+            res.locals.redirect = {
                 route: '/error',
                 token: res.locals.token || null,
                 user: user,
@@ -56,11 +55,22 @@ function getLogin(req, res, next) {
 function login(req, res, next) {
     passport.authenticate('local', (error, user) => {
         if (!user) {
-            res.locals.error = {
+            console.error('User not found')
+            res.locals.redirect = {
                 route: '/error',
                 token: res.locals.token || null,
                 user: user,
-                error: error
+                error: 'User not found'
+            }
+            next();
+        }
+        if (error) {
+            console.error('authentication error')
+            res.locals.redirect = {
+                route: '/error',
+                token: res.locals.token || null,
+                user: user,
+                error: 'Authentication error'
             }
             next();
         }
@@ -71,7 +81,7 @@ function login(req, res, next) {
                     route: '/error',
                     token: res.locals.token || null,
                     user: user,
-                    error: error
+                    error: 'An error occured: failed to login'
                 }
                 next();
             }
@@ -81,7 +91,7 @@ function login(req, res, next) {
                     route: '/error',
                     token: res.locals.token || null,
                     user: user,
-                    error: error
+                    error: 'Login failure'
                 }
                 next();
             }
@@ -89,7 +99,7 @@ function login(req, res, next) {
                 route: '/',
                 token: res.locals.token || null,
                 user: user,
-                error: error
+                error: null
             }
             next();
         })

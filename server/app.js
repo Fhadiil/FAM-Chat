@@ -15,10 +15,7 @@ const User = require("./models/users.js");
 //DB settings
 
 mongoose
-    .connect("mongodb://127.0.0.1:27017/FAMChatDB", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
+    .connect("mongodb://127.0.0.1:27017/FAMChatDB")
     .then(() => console.log("Connected to db"))
     .catch((error) => console.log(error.message));
 
@@ -38,8 +35,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-//using flash messages
-// app.use(flash());
+
 
 // app.use(
 //     // methodOverride("_method", {
