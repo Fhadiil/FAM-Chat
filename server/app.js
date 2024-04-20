@@ -2,12 +2,13 @@ const express = require("express");
 const dotenv = require('dotenv').config();
 const path = require("path");
 const mongoose = require("mongoose");
-const methodOverride = require("method-override");
+// const methodOverride = require("method-override");
 const expressSession = require("express-session");
-const flash = require('connect-flash');
+// const flash = require('connect-flash');
 const { validationResult, body, check } = require('express-validator');
 const passport = require('passport');
 const router = require('./routes/index.js');
+const User = require("./models/users.js");
 
 //app and DB settings
 
@@ -38,33 +39,33 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //using flash messages
-app.use(flash());
+// app.use(flash());
 
-app.use(
-    methodOverride("_method", {
-        methods: ["POST", "GET"],
-    })
-);
+// app.use(
+//     // methodOverride("_method", {
+//         methods: ["POST", "GET"],
+//     })
+// );
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Use PassportLocalMongoose's createStrategy instead of LocalStrategy
-// passport.use(mod.user.createStrategy());
+passport.use(User.createStrategy());
 
-// passport.serializeUser(mod.user.serializeUser());
-// passport.deserializeUser(mod.user.deserializeUser());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //server port
 app.set('port', process.env.PORT || 5000);
 
 //routes
-// app.use((req, res, next) => {
-//     // console.log('URL:',req.url)
-//     // res.locals.loggedIn = req.isAuthenticated();
-//     // res.locals.currentUser = req.user;
-//     // next()
-// });
+app.use((req, res, next) => {
+    // console.log('URL:',req.url)
+    res.locals.loggedIn = req.isAuthenticated();
+    res.locals.currentUser = req.user;
+    next()
+});
 
 app.use("/", router);
 //server connection
