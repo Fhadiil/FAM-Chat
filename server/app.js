@@ -57,7 +57,7 @@ app.set('port', process.env.PORT || 5000);
 
 //routes
 app.use((req, res, next) => {
-    // console.log('URL:',req.url)
+    
     res.locals.loggedIn = req.isAuthenticated();
     res.locals.currentUser = req.user;
     next()

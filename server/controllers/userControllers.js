@@ -1,11 +1,27 @@
-passport = require('passport'),
-    jwt = require('jsonwebtoken');
-const users = require('../models/users');
+const passport = require('passport'),
+    jwt = require('jsonwebtoken'),
+    users = require('../models/users');
+
+
+function generateToken(user) {
+    if (user) {
+        let signedToken = jwt.sign(
+            {
+                data: user._id,
+                exp: new Date().setDate(new Date().getDate() + 1)
+            },
+            process.env.TOKEN_KEY
+        );
+        return signedToken;
+    }
+    return new Error('userException: user not found');
+}
+
 
 function getCreateAccount(req, res, next) {
     res.locals.redirect = {
         route: '/',
-        token: res.locals.token || null,
+        token: null,
         user: null,
         error: null
     }
@@ -29,13 +45,37 @@ function createAccount(req, res, next) {
             }
             next();
         }
-        res.locals.redirect = {
-            route: '/',
-            token: res.locals.token || null,
-            user: user,
-            error: error || null
-        }
-        next();
+        req.login(user, (error) => {
+            if (error) {
+                console.error('login failed!', error)
+                res.locals.redirect = {
+                    route: '/error',
+                    token: res.locals.token || null,
+                    user: user,
+                    error: 'An error occured: failed to login'
+                }
+                next();
+            }
+            if (!user) {
+                console.error('login failed!', error)
+                res.locals.redirect = {
+                    route: '/error',
+                    token: res.locals.token || null,
+                    user: user,
+                    error: 'Login failure'
+                }
+                next();
+            }
+            res.locals.token = generateToken(user);
+            res.locals.redirect = {
+                route: '/',
+                token: res.locals.token || null,
+                user: user,
+                loggedIn: req.isAuthenticated(),
+                error: null,
+            }
+            next();
+        })
     })
 
 }
@@ -99,11 +139,44 @@ function login(req, res, next) {
                 route: '/',
                 token: res.locals.token || null,
                 user: user,
-                error: null
+                loggedIn: req.isAuthenticated(),
+                error: null,
             }
             next();
         })
     })(req, res, next)
+}
+
+function verifyToken(req, res, next) {
+    const token = req.query.token || res.locals.redirect.token
+    if (token) {
+        jwt.verify(token, process.env.TOKEN_KEY, (error, payload) => {
+            if (payload) {
+                mod.user
+                    .findById(payload.data).then(user => {
+                        if (user) {
+                            return next();
+                        } else {
+                            res.json({
+                                error: true,
+                                message: "No User account found."
+                            })
+                        }
+                    })
+            } else {
+                res.json({
+                    error: true,
+                    message: "Cannot verify API token."
+                });
+                next();
+            }
+        })
+    } else {
+        res.json({
+            error: true,
+            message: "Provide Token"
+        });
+    }
 }
 
 
@@ -111,5 +184,6 @@ module.exports = {
     getCreateAccount,
     createAccount,
     getLogin,
-    login
+    login,
+    verifyToken
 }

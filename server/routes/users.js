@@ -6,15 +6,15 @@ var router = express.Router(),
 
 /* GET users listing. */
 
-router.get('/create', userControllers.getCreateAccount, homeControllers.homeGET);
+router.get('/create', userControllers.getCreateAccount, homeControllers.redirectRoute);
 router.post('/create',
-  body('password', 'password cannot be empty and must be greater than 3 characters')
+  query('password', 'password cannot be empty and must be greater than 3 characters')
     .notEmpty()
     .isLength({ min: 3 }),
   //
   //**************************************** VALIDATING EMAIL FIELD ********************************************/
   //
-  body('username', 'Invalid Username')
+  query('username', 'Invalid Username')
     .notEmpty()
     .trim(),
   //
@@ -24,7 +24,6 @@ router.post('/create',
     res.locals.valResult = validationResult(req);
     if (!res.locals.valResult.isEmpty()) {
       req.skip = true;
-      console.log(req.body)
       res.locals.redirect = {
         route: '/error',
         token: res.locals.token || null,
@@ -36,8 +35,8 @@ router.post('/create',
       next();
     }
   }
-  , userControllers.createAccount, homeControllers.homeGET);
-router.get('/login', userControllers.createAccount, homeControllers.homeGET);
-router.post('/login', userControllers.login, homeControllers.homeGET);
+  , userControllers.createAccount, homeControllers.redirectRoute);
+router.get('/login', userControllers.createAccount, homeControllers.redirectRoute);
+router.post('/login', userControllers.login, homeControllers.redirectRoute);
 
 module.exports = router;
