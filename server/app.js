@@ -4,11 +4,11 @@ const path = require("path");
 const mongoose = require("mongoose");
 // const methodOverride = require("method-override");
 const expressSession = require("express-session");
-// const flash = require('connect-flash');
 const { validationResult, body, check } = require('express-validator');
 const passport = require('passport');
 const router = require('./routes/index.js');
 const User = require("./models/users.js");
+const cors = require('cors');
 
 //app and DB settings
 
@@ -22,6 +22,7 @@ mongoose
 //app settings
 
 const app = express();
+app.use(cors())
 app.use(
     expressSession({
         cookie: { name: 'user', maxAge: 5000000 },
