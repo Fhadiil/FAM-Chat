@@ -22,7 +22,7 @@ const Header = ({ links }) => {
 
   return (
     <Navbar style={navbarStyle} dark expand="md">
-      <NavbarBrand href="/">FAM DATA</NavbarBrand>
+      <NavbarBrand href="/">FAM CHAT</NavbarBrand>
       <NavbarToggler onClick={toggle} />
       <Collapse isOpen={isOpen} navbar>
         <Nav className="ml-auto" navbar>

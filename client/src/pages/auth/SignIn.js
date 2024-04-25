@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ButtonToolbar } from "reactstrap";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 // import toast from "react-hot-toast";
@@ -54,6 +54,19 @@ export default function SignIn() {
     // Implement social media login logic here
     // toast.success(`Logging in with ${provider}`);
   };
+  useEffect(() => {
+
+    fetch('localhost:8000',
+      {
+        method: 'POST', headers: {
+          'Content-Type': "application/json"
+        },
+        body: JSON.stringify(formData)
+
+      }).then((result) => {
+        console.log(result);
+      }).catch((error) => { console.log(error); })
+  }, [formData])
 
   return (
     <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 dark:bg-gray-900 dark:text-gray-100">

@@ -4,7 +4,7 @@
   "private": false,
   "main": "app.js",
   "scripts": {
-    "start": "nodemon",
+    "start": "nodemon users.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

@@ -17,6 +17,7 @@
     "react-toast": "^1.0.3",
     "react-toastify": "^10.0.5",
     "reactstrap": "^9.2.2",
+    "socket.io-client": "^4.7.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
