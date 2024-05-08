@@ -25,11 +25,6 @@ export default function SignIn() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    // toast.success("Form submitted");
-  };
 
   const formFields = [
     {
@@ -54,19 +49,39 @@ export default function SignIn() {
     // Implement social media login logic here
     // toast.success(`Logging in with ${provider}`);
   };
-  useEffect(() => {
-
-    fetch('localhost:8000',
-      {
-        method: 'POST', headers: {
-          'Content-Type': "application/json"
+  const registerUser = async (userData) => {
+    try {
+      const response = await fetch("http://localhost:5000/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
-
-      }).then((result) => {
-        console.log(result);
-      }).catch((error) => { console.log(error); })
-  }, [formData])
+        body: JSON.stringify(userData),
+      });
+      if (response.ok) {
+        // Registration successful
+        const data = await response.json();
+        console.log(data);
+        // eslint-disable-next-line no-lone-blocks
+        // {
+          data.message === "USER SIGNED" && navigate("/");
+          // &&toast.success("Form submitted");
+        // }
+      } else {
+        // Handle registration failure
+        const errorData = await response.json();
+        console.error("Registration failed:", errorData);
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    registerUser(formData);
+    console.log("Form submitted:", formData);
+    // toast.success("Form submitted");
+  };
 
   return (
     <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 dark:bg-gray-900 dark:text-gray-100">

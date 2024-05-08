@@ -8,13 +8,13 @@ var router = express.Router(),
 
 router.get('/create', userControllers.getCreateAccount, homeControllers.redirectRoute);
 router.post('/create',
-  query('password', 'password cannot be empty and must be greater than 3 characters')
+  body('password1', 'password cannot be empty and must be greater than 3 characters')
     .notEmpty()
     .isLength({ min: 3 }),
   //
   //**************************************** VALIDATING EMAIL FIELD ********************************************/
   //
-  query('username', 'Invalid Username')
+  body('username', 'Invalid Username')
     .notEmpty()
     .trim(),
   //

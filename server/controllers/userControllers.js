@@ -34,7 +34,7 @@ function createAccount(req, res, next) {
         username: req.body.username || req.query.username
     }
     const newUser = new users(userDetails);
-    const password = req.body.password || req.query.password
+    const password = req.body.password1 || req.query.password
     users.register(newUser, password, (error, user) => {
         if (error || !user) {
             res.locals.redirect = {
@@ -72,6 +72,7 @@ function createAccount(req, res, next) {
                 token: res.locals.token || null,
                 user: user,
                 loggedIn: req.isAuthenticated(),
+                message: 'USER SIGNED',
                 error: null,
             }
             next();

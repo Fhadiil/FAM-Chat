@@ -31,7 +31,7 @@ const SignUp = () => {
 
   const registerUser = async (userData) => {
     try {
-      const response = await fetch("http://localhost:8000/register", {
+      const response = await fetch("http://localhost:5000/users/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const SignUp = () => {
         console.log(data);
         // eslint-disable-next-line no-lone-blocks
         {
-          data.message === "USER SIGNED" && navigate("/signIn");
+          data.loggedIn && navigate(`${data.route}`);
           // &&toast.success("Form submitted");
         }
       } else {
