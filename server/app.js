@@ -1,5 +1,5 @@
 const express = require("express");
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 const path = require("path");
 const mongoose = require("mongoose");
 // const methodOverride = require("method-override");
@@ -58,7 +58,6 @@ app.set('port', process.env.PORT || 5000);
 
 //routes
 app.use((req, res, next) => {
-    
     res.locals.loggedIn = req.isAuthenticated();
     res.locals.currentUser = req.user;
     next()
@@ -70,4 +69,4 @@ app.use("/", router);
 const server = app.listen(app.get('port'), (err) => {
     err ? console.log('this', err) : console.log("server listening at port " + app.get('port'));
 }), io = require('socket.io')(server);
-// require('./controllers/chatController')(io);
+require('./controllers/chatController')(io);
